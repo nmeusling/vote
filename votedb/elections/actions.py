@@ -5,8 +5,9 @@ def create_database():
     connection_obj = sqlite3.connect("elections.db")
     cursor = connection_obj.cursor()
     table_creation_query = """
-    CREATE TABLE ELECTIONS (
-        Name VARCHAR(255) NOT NULL
+    CREATE TABLE IF NOT EXISTS ELECTIONS (
+        id INTEGER PRIMARY KEY,
+        name VARCHAR(255) NOT NULL UNIQUE
     );
 """
     cursor.execute(table_creation_query)
@@ -17,7 +18,7 @@ def view_elections():
     connection_obj = sqlite3.connect("elections.db")
     cursor = connection_obj.cursor()
     table_selection_query = """
-    SELECT Name FROM ELECTIONS;
+    SELECT id, name FROM ELECTIONS;
 """
 
     results = cursor.execute(table_selection_query)
@@ -26,12 +27,35 @@ def view_elections():
     return elections
 
 
-def insert():
+def view_election_by_name(name: str):
+    connection_obj = sqlite3.connect("elections.db")
+    cursor = connection_obj.cursor()
+    table_selection_query = """
+    SELECT name FROM ELECTIONS WHERE name = (?);
+    """
+    results = cursor.execute(table_selection_query, (name,))
+    election = results.fetchone()
+    connection_obj.close()
+    return election
+
+
+def insert(election_name: str):
     connection_obj = sqlite3.connect("elections.db")
     cursor = connection_obj.cursor()
     table_insertion_query = """
-    INSERT INTO ELECTIONS (Name) VALUES ('Test');
+    INSERT INTO ELECTIONS (name) VALUES (?);
     """
-    cursor.execute(table_insertion_query)
+    cursor.execute(table_insertion_query, (election_name,))
+    connection_obj.commit()
+    connection_obj.close()
+
+
+def delete_by_name(election_name: str):
+    connection_obj = sqlite3.connect("elections.db")
+    cursor = connection_obj.cursor()
+    table_deletion_query = """
+    DELETE FROM ELECTIONS WHERE (name) = (?);
+    """
+    cursor.execute(table_deletion_query, (election_name,))
     connection_obj.commit()
     connection_obj.close()
