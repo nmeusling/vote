@@ -10,7 +10,15 @@ app = typer.Typer()
 
 
 @app.command()
-def view(name: Annotated[str, typer.Option()] = ""):
+def view(
+    name: Annotated[
+        str,
+        typer.Option(
+            help="View existing election by name, by default all will show",
+            show_default=True,
+        ),
+    ] = "",
+):
     if name:
         print(view_election_by_name(name))
     else:

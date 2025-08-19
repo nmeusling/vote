@@ -7,6 +7,6 @@ app = typer.Typer()
 
 
 @app.command()
-def create(election_name: Annotated[str, typer.Option(prompt=True)]):
-    print(f"Created {election_name}")
-    insert(election_name)
+def create(name: Annotated[str, typer.Option(prompt=True)]):
+    print(f"Created {name}")
+    insert(name)
